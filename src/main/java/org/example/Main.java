@@ -29,6 +29,7 @@ public class Main {
                     .collect(Collectors.toList());
  //                       cities.forEach(System.out::println);
                         maxNumberOfResident(cities);
+                        countCities(cities);
 
         } catch (IOException | CsvException e) {
             e.printStackTrace();
@@ -61,5 +62,20 @@ public class Main {
         } else {
             System.out.println("Список городов пуст");
         }
+    }
+    public static void countCities(List<City> cities){
+        Map<String,Integer> regionCount = new HashMap<>();
+        for (City city : cities){
+            String region = city.getRegion();
+            if(regionCount.containsKey(region)){
+                regionCount.put(region, regionCount.get(region) + 1);
+            } else {
+                regionCount.put(region,1);
+            }
+
+        }
+            for(Map.Entry<String, Integer> entry : regionCount.entrySet()){
+                System.out.printf("%s %d%n", entry.getKey(),entry.getValue());
+            }
     }
 }
