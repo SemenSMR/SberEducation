@@ -19,15 +19,17 @@ public class Main {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader("src/City.csv"))
                 .withCSVParser(parser)
                 .build()) {
-
             var allRows = reader.readAll();
+
             List<City> cities = allRows.stream()
                     .map(Main::createCityFromCSVRow)
-                    .sorted(Comparator.comparing((City city) -> city.getDistrict().toLowerCase())
-                            .thenComparing((City city) -> city.getName().toLowerCase()))
+//   Сортировка !
+//                    .sorted(Comparator.comparing((City city) -> city.getDistrict().toLowerCase())
+//                            .thenComparing((City city) -> city.getName().toLowerCase()))
                     .collect(Collectors.toList());
+ //                       cities.forEach(System.out::println);
+                        maxNumberOfResident(cities);
 
-            cities.forEach(System.out::println);
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
@@ -42,5 +44,22 @@ public class Main {
         String foundation = rowData[5];
 
         return new City(name, region, district, population, foundation);
+    }
+    public static void maxNumberOfResident(List<City> cities){
+        int maxPopulationIndex = -1;
+        int maxPopulation = Integer.MIN_VALUE;
+        for (int i = 0; i < cities.size(); i++) {
+            int population = Integer.parseInt(cities.get(i).getPopulation());
+            if(population > maxPopulation){
+                maxPopulation = population;
+                maxPopulationIndex = i;
+            }
+        }
+
+        if (maxPopulationIndex != -1){
+            System.out.printf("[%d] = %,d%n", maxPopulationIndex,maxPopulation);
+        } else {
+            System.out.println("Список городов пуст");
+        }
     }
 }
