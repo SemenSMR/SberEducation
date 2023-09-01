@@ -7,8 +7,8 @@ import com.opencsv.exceptions.CsvException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -21,23 +21,25 @@ public class Main {
                 .build()) {
 
             var allRows = reader.readAll();
-            for (String[] row : allRows) {
-                List<String> rowData = Arrays.asList(row);
-                City city = createCityFromCSVRow(rowData);
-                System.out.println(city);
-            }
+            List<City> cities = allRows.stream()
+                    .map(Main::createCityFromCSVRow)
+                    .sorted(Comparator.comparing((City city) -> city.getDistrict().toLowerCase())
+                            .thenComparing((City city) -> city.getName().toLowerCase()))
+                    .collect(Collectors.toList());
+
+            cities.forEach(System.out::println);
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
 
     }
 
-    static City createCityFromCSVRow(List<String> rowData) {
-        String name = rowData.get(1);
-        String region = rowData.get(2);
-        String district = rowData.get(3);
-        String population = rowData.get(4);
-        String foundation = rowData.get(5);
+    static City createCityFromCSVRow(String[] rowData) {
+        String name = rowData[1];
+        String region = rowData[2];
+        String district = rowData[3];
+        String population = rowData[4];
+        String foundation = rowData[5];
 
         return new City(name, region, district, population, foundation);
     }
